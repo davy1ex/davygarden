@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/index/","tags":["gardenEntry"]}
+{"dg-publish":true}
 ---
 тут буду писать про жотэдэ
 - [[как гтд пососнула]]
