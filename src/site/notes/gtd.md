@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true}
+{"dg-publish":true, "permalink":"/gtd/"}
 ---
 тут буду писать про жотэдэ
 - [[как гтд пососнула]]
