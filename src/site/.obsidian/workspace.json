@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "notes/как гтд пососнула.md",
+                "file": "notes/gtd.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "notes/как гтд пососнула.md",
+                "file": "notes/gtd.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "notes/как гтд пососнула.md",
+                "file": "notes/gtd.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "notes/как гтд пососнула.md"
+                "file": "notes/gtd.md"
               }
             }
           }
@@ -149,6 +149,7 @@
   "active": "6b805bb3e4163b4b",
   "lastOpenFiles": [
     "notes/как гтд пососнула.md",
-    "notes/index.md"
+    "notes/index.md",
+    "notes/gtd.md"
   ]
 }
