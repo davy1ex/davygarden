@@ -1,0 +1,17 @@
+{
+    "name": "davy1ex/davygarden",
+    "autoload": {
+        "psr-4": {
+            "Davy1ex\\Davygarden\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "davy1ex",
+            "email": "davy1ex@yandex.ru"
+        }
+    ],
+    "require": {
+        "erusev/parsedown": "^1.7"
+    }
+}
