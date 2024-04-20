@@ -18,3 +18,23 @@
     color: white;
     text-decoration: none;
 }
+
+code, pre {
+    background-color: #ffffff; /* Светлый серый фон для контраста */
+    color: lightgray;
+    border: 1px solid #797979; /* Граница вокруг блока кода */
+    display: block; /* Заставляет код отображаться как блочный элемент */
+    padding: 10px; /* Отступы вокруг текста */
+    margin: 10px 0; /* Отступы сверху и снизу для разделения блоков кода */
+    overflow: auto; /* Добавляет прокрутку если код выходит за границы элемента */
+    font-family: 'Courier New', Courier, monospace; /* Моноширинный шрифт для кода */
+    white-space: pre-wrap; /* Сохраняет форматирование пробелов и переносов */
+    word-wrap: break-word; /* Перенос слов для длинных строк кода */
+}
+
+code {
+    display: inline-block; /* Для однострочных кодов */
+    border: none;
+    padding: 2px 4px; /* Меньше отступа для однострочных кодов */
+    background-color: #e8e8e8; /* Чуть более светлый фон для однострочных кодов */
+}
