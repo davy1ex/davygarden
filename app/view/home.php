@@ -8,7 +8,16 @@
 <body>
    <?php 
         include_once "header.php";
-        include_once "recent_notes.php"
+        include_once "recent_notes.php";
+        include_once __DIR__ . "/../model/post.php";
+        $modelPost = new Post();
+        $posts = $modelPost->getAllPosts();
+        
+        foreach($posts as $post) {
+            echo "<div class='post-item'> <a> $post[name]; </a> </div>";
+        }
+
+
    ?>
 
    
