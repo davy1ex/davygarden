@@ -2,6 +2,18 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+include ("../app/view/home.php")
+?>
+
+
+
+
+
+<?php exit;
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 ?>
 
@@ -30,4 +42,4 @@ $posts = $Post->getAllPosts();
     ?>
 </main>
 
-<?php include 'footer.php'; ?>
+<?php include 'footer.php'; ?> 
