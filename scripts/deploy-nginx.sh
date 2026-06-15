@@ -3,7 +3,7 @@
 # Coolify settings:
 #   Build Pack: Nixpacks
 #   Is static site: true
-#   Install Command: (leave empty — script runs npm ci)
+#   Install Command: (leave empty — Nixpacks runs npm ci automatically)
 #   Build Command: bash scripts/deploy-nginx.sh
 #   Publish Directory: public
 #   Custom Nginx: paste contents of nginx.conf from repo root
@@ -42,6 +42,13 @@ fetch_git_history() {
 }
 
 install_dependencies() {
+  # Nixpacks already runs `npm ci` before the build command. Re-running it
+  # fails with EBUSY on the mounted node_modules/.cache directory.
+  if [[ -d node_modules ]]; then
+    log "dependencies already installed by Nixpacks, skipping npm ci"
+    return 0
+  fi
+
   log "installing npm dependencies"
   if [[ -f package-lock.json ]]; then
     npm ci
