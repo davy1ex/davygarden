@@ -15,10 +15,10 @@ configuration:
     fontOrigin: googleFonts
     cdnCaching: true
     typography:
-      title: JetBrains Mono
-      header: JetBrains Mono
-      body: JetBrains Mono
-      code: JetBrains Mono
+      title: Source Sans Pro
+      header: Source Sans Pro
+      body: Source Sans Pro
+      code: Source Code Pro
     colors:
       lightMode:
         light: "#ECEFF4"
@@ -99,7 +99,7 @@ plugins:
     enabled: false
     order: 92
   - source: github:quartz-community/fonts
-    enabled: true
+    enabled: false
   - source: github:quartz-community/remove-draft
     enabled: true
   - source: github:quartz-community/explicit-publish
