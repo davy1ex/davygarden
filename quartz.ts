@@ -2,4 +2,3 @@ import { loadQuartzConfig, loadQuartzLayout } from "./quartz/plugins/loader/conf
 
 const config = await loadQuartzConfig()
 export default config
-export const layout = await loadQuartzLayout()

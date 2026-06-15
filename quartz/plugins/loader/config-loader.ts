@@ -490,7 +490,14 @@ export async function loadQuartzConfig(
 
   // Load layout and add PageTypeDispatcher to emitters.
   // This must happen after plugin instantiation so the component registry is populated.
-  const layout = await loadQuartzLayout()
+  let layoutOverrides: Parameters<typeof loadQuartzLayout>[0] | undefined
+  try {
+    const overridesModule = await import("../../../quartz.overrides")
+    layoutOverrides = overridesModule.layoutOverrides
+  } catch {
+    // Optional project-specific layout overrides.
+  }
+  const layout = await loadQuartzLayout(layoutOverrides)
   plugins.emitters.push(
     builtinPlugins.PageTypes.PageTypeDispatcher({
       defaults: layout.defaults,
