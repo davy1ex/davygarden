@@ -2,6 +2,7 @@ import { GlobalConfiguration } from "../cfg"
 import { QuartzPluginData } from "../plugins/vfile"
 import { ValidLocale } from "../i18n"
 import { ValidDateType } from "./Date"
+import { collectGitActivityCounts } from "./activityGitHistory"
 
 export type ActivityDateType = "modified" | "created"
 
@@ -29,6 +30,7 @@ export type ActivityData = {
   stats: ActivityStats
   monthLabels: { label: string; weekIndex: number }[]
   weekCount: number
+  usingGitHistory: boolean
 }
 
 export function toDateKey(date: Date): string {
@@ -100,7 +102,12 @@ function longestStreak(activeDayKeys: string[]): number {
   return max
 }
 
-function formatDayLabel(date: Date, count: number, locale: ValidLocale): string {
+function formatDayLabel(
+  date: Date,
+  count: number,
+  locale: ValidLocale,
+  noun: "updates" | "commits" = "updates",
+): string {
   const formatted = date.toLocaleDateString(locale, {
     weekday: "short",
     year: "numeric",
@@ -110,8 +117,8 @@ function formatDayLabel(date: Date, count: number, locale: ValidLocale): string 
   if (count === 0) {
     return `No activity on ${formatted}`
   }
-  const noun = count === 1 ? "update" : "updates"
-  return `${count} ${noun} on ${formatted}`
+  const label = count === 1 ? noun.slice(0, -1) : noun
+  return `${count} ${label} on ${formatted}`
 }
 
 function buildMonthLabels(weeks: HeatmapWeek[], locale: ValidLocale): { label: string; weekIndex: number }[] {
@@ -137,15 +144,22 @@ function buildMonthLabels(weeks: HeatmapWeek[], locale: ValidLocale): { label: s
 export function buildActivityData(
   allFiles: QuartzPluginData[],
   cfg: GlobalConfiguration,
-  options: { dateType?: ActivityDateType; weeks?: number; endDate?: Date } = {},
+  options: {
+    dateType?: ActivityDateType
+    weeks?: number
+    endDate?: Date
+    activitySource?: "git" | "files"
+    contentDirectory?: string
+  } = {},
 ): ActivityData {
   const dateType = options.dateType ?? "modified"
   const numWeeks = options.weeks ?? 52
+  const activitySource = options.activitySource ?? "git"
   const end = new Date(options.endDate ?? new Date())
   end.setHours(0, 0, 0, 0)
 
   const locale = (cfg.locale ?? "en-US") as ValidLocale
-  const counts = new Map<string, number>()
+  const fileCounts = new Map<string, number>()
   let totalNotes = 0
   let notesThisYear = 0
   const currentYear = end.getFullYear()
@@ -159,7 +173,7 @@ export function buildActivityData(
 
     totalNotes++
     const dateKey = toDateKey(activityDate)
-    counts.set(dateKey, (counts.get(dateKey) ?? 0) + 1)
+    fileCounts.set(dateKey, (fileCounts.get(dateKey) ?? 0) + 1)
 
     if (activityDate.getFullYear() === currentYear) {
       notesThisYear++
@@ -169,6 +183,17 @@ export function buildActivityData(
   const start = new Date(end)
   start.setDate(start.getDate() - (numWeeks * 7 - 1))
   start.setDate(start.getDate() - start.getDay())
+
+  let counts = fileCounts
+  let usingGitHistory = false
+
+  if (activitySource === "git" && options.contentDirectory) {
+    const gitCounts = collectGitActivityCounts(options.contentDirectory, start)
+    if (gitCounts !== null) {
+      counts = gitCounts
+      usingGitHistory = true
+    }
+  }
 
   let maxPerDay = 0
   for (const count of counts.values()) {
@@ -194,7 +219,7 @@ export function buildActivityData(
       dateKey,
       count,
       level: intensityLevel(count, maxPerDay),
-      label: formatDayLabel(current, count, locale),
+      label: formatDayLabel(current, count, locale, usingGitHistory ? "commits" : "updates"),
     })
 
     if (current.getDay() === 6) {
@@ -226,5 +251,6 @@ export function buildActivityData(
       updatesInRange,
     },
     monthLabels: buildMonthLabels(weeks, locale),
+    usingGitHistory,
   }
 }

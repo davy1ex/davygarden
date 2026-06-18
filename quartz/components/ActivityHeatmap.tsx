@@ -8,12 +8,14 @@ export interface ActivityHeatmapOptions {
   title?: string
   dateType?: ActivityDateType
   weeks?: number
+  activitySource?: "git" | "files"
 }
 
 const defaultOptions: ActivityHeatmapOptions = {
   title: "Activity",
   dateType: "modified",
   weeks: 52,
+  activitySource: "git",
 }
 
 const dayLabels = ["", "Mon", "", "Wed", "", "Fri", ""]
@@ -21,7 +23,7 @@ const dayLabels = ["", "Mon", "", "Wed", "", "Fri", ""]
 export default ((userOpts?: Partial<ActivityHeatmapOptions>) => {
   const opts = { ...defaultOptions, ...userOpts }
 
-  const ActivityHeatmap: QuartzComponent = ({ allFiles, cfg, displayClass, fileData }: QuartzComponentProps) => {
+  const ActivityHeatmap: QuartzComponent = ({ allFiles, cfg, displayClass, fileData, ctx }: QuartzComponentProps) => {
     if (fileData.slug !== "index") {
       return null
     }
@@ -29,6 +31,8 @@ export default ((userOpts?: Partial<ActivityHeatmapOptions>) => {
     const data = buildActivityData(allFiles, cfg, {
       dateType: opts.dateType,
       weeks: opts.weeks,
+        contentDirectory: ctx.argv.directory,
+      activitySource: opts.activitySource,
     })
 
     if (data.stats.totalNotes === 0) {
@@ -36,10 +40,15 @@ export default ((userOpts?: Partial<ActivityHeatmapOptions>) => {
     }
 
     const dateTypeLabel = opts.dateType === "created" ? "published" : "updated"
+    const metaLabel = data.usingGitHistory
+      ? "By git commits to content/"
+      : `By last ${dateTypeLabel} date`
+    const activityNoun = data.usingGitHistory ? "commit" : "update"
+    const activityNounPlural = data.usingGitHistory ? "commits" : "updates"
     const summary =
       data.stats.activeDays === 0
         ? `${data.stats.totalNotes} ${data.stats.totalNotes === 1 ? "note" : "notes"} · no activity in the last ${opts.weeks} weeks`
-        : `${data.stats.activeDays} active ${data.stats.activeDays === 1 ? "day" : "days"} · ${data.stats.updatesInRange} ${data.stats.updatesInRange === 1 ? "update" : "updates"} in ${opts.weeks} weeks`
+        : `${data.stats.activeDays} active ${data.stats.activeDays === 1 ? "day" : "days"} · ${data.stats.updatesInRange} ${data.stats.updatesInRange === 1 ? activityNoun : activityNounPlural} in ${opts.weeks} weeks`
 
     const gridStyle = {
       gridTemplateColumns: `var(--activity-label-width) repeat(${data.weekCount}, var(--activity-cell-size))`,
@@ -51,7 +60,7 @@ export default ((userOpts?: Partial<ActivityHeatmapOptions>) => {
           <div class="activity-heatmap__intro">
             <h3>{opts.title}</h3>
             <p class="activity-heatmap__summary">{summary}</p>
-            <p class="activity-heatmap__meta">By last {dateTypeLabel} date</p>
+            <p class="activity-heatmap__meta">{metaLabel}</p>
           </div>
           <div class="activity-heatmap__legend" aria-hidden="true">
             <span>Less</span>
